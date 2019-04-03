@@ -1,7 +1,9 @@
 import pygame
+import projectile
+from gameobject import Gameobject
 
 
-class Player:
+class Player(Gameobject):
     _move_directions = ['LEFT', 'RIGHT', 'UP', 'DOWN']
 
     def __init__(self, x: int, y: int, width: int, height: int, speed: int = 5, window=None):
@@ -22,8 +24,9 @@ class Player:
         self._window = window
         self._window_width = window.get_width()
         self._window_height = window.get_height()
+        self.is_shot = False
 
-    def draw_player(self, window, sprite_path: str = 'Sprites/Player/Player.png'):
+    def draw(self, window, sprite_path: str = 'Sprites/Player/Player.png'):
         """ Draw a player in a certain window """
         player_image = pygame.transform.scale(pygame.image.load(sprite_path), (self.width, self.height))
         window.blit(player_image, (self.x, self.y))
@@ -48,6 +51,13 @@ class Player:
                 self.y -= self.speed
             if direction == 'DOWN' and in_bounds:
                 self.y += self.speed
+
+    def shoot(self) -> projectile.Projectile:
+        bullet = projectile.Projectile(self.x + 5, self.y + 11, 10)
+        return bullet
+
+    def is_destroyed(self):
+        return False
 
     def is_in_bounds(self, direction) -> bool:
         """ Checks if player is in bounds of display when moving """
