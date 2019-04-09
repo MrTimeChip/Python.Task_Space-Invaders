@@ -1,4 +1,3 @@
-import pygame
 
 
 class Gameobject(object):
@@ -7,7 +6,7 @@ class Gameobject(object):
         """ Returns the Rect of the image """
         pass
 
-    def draw(self, window, sprite_path: str = 'Sprites/Player/Player.png'):
+    def draw(self, window):
         """ Draw an object in a certain window """
         pass
 
@@ -18,5 +17,3 @@ class Gameobject(object):
     def is_destroyed(self):
         """ Checks if object is destroyed """
         pass
-
-

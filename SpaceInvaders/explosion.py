@@ -4,7 +4,13 @@ import pygame
 
 class Explosion(Gameobject):
 
-    def __init__(self, x: int, y: int, width: int = 15, height: int = 15, window=None):
+    def __init__(self,
+                 x: int,
+                 y: int,
+                 width: int = 15,
+                 height: int = 15,
+                 window=None,
+                 sprite_path: str = 'Sprites/Effects/Explosion.png'):
         self.x = x
         self.y = y
         self.width = width
@@ -14,14 +20,15 @@ class Explosion(Gameobject):
         self._window_height = window.get_height()
         self.rect = None
         self._start_tick = pygame.time.get_ticks()
+        self._sprite_path = sprite_path
 
     def get_rect(self):
         """ Returns the Rect of the image """
         return self.rect
 
-    def draw(self, window, sprite_path: str = 'Sprites/Effects/Explosion.png'):
+    def draw(self, window, ):
         """ Draw an object in a certain window """
-        image = pygame.transform.scale(pygame.image.load(sprite_path), (self.width, self.height))
+        image = pygame.transform.scale(pygame.image.load(self._sprite_path), (self.width, self.height))
         self.rect = image.get_rect(left=self.x, top=self.y)
         window.blit(image, (self.x, self.y))
 

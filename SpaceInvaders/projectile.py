@@ -1,5 +1,5 @@
 import pygame
-from enemy import Enemy
+from damage_receiver import DamageReceiver
 from explosion import Explosion
 from game import current_drawable_objects, add_gameobject
 from gameobject import Gameobject
@@ -10,20 +10,27 @@ class Projectile(Gameobject):
                  x: int,
                  y: int,
                  speed: int,
-                 damage: int = 10,
-                 width: int = 10,
-                 height: int = 10,
-                 window=None):
+                 shooting_class,
+                 damage: int = 1,
+                 width: int = 20,
+                 height: int = 20,
+                 window=None,
+                 sprite_path: str = 'Sprites/Effects/Bullet.png'):
+        """
+        :type shooting_class: class
+        """
         self.x = x
         self.y = y
         self.speed = speed
         self.damage = damage
         self.width = width
         self.height = height
+        self._shooting_class = shooting_class
         self.rect = None
         self._window = window
         self._is_destroyed = False
         self._collided_gameobject = None
+        self._sprite_path = sprite_path
 
     def update(self):
         """ Called every tick """
@@ -32,21 +39,23 @@ class Projectile(Gameobject):
 
             self.y -= self.speed
 
-            if self.y < 0 or self.y > 500:
+            if self.y < 0 or self.y > self._window.get_height():
                 self._is_destroyed = True
 
             if self.is_collided(current_drawable_objects):
-                if isinstance(self._collided_gameobject, Enemy):
-                    self._collided_gameobject.receive_damage(self.damage)
-                    explosion = Explosion(self.x - 3, self.y - 7, window=self._window)
-                    add_gameobject(explosion)
-                    self._is_destroyed = True
+                if isinstance(self._collided_gameobject, DamageReceiver):
+                    if not isinstance(self._collided_gameobject, self._shooting_class):
+                        self._collided_gameobject.receive_damage(self.damage)
+                        explosion = Explosion(self.x - 3, self.y - 7, window=self._window)
+                        add_gameobject(explosion)
+                        self._is_destroyed = True
 
-    def draw(self, window, sprite_path: str = 'Sprites/Effects/Bullet.png'):
+    def draw(self, window):
         """ Draw an object in a certain window """
-        image = pygame.transform.scale(pygame.image.load(sprite_path), (self.width, self.height))
+        image = pygame.transform.scale(pygame.image.load(self._sprite_path), (self.width, self.height))
         self.rect = image.get_rect(left=self.x, top=self.y)
         window.blit(image, (self.x, self.y))
+        pygame.draw.rect(window, pygame.Color('green'), self.rect, 3)
 
     def get_rect(self):
         """ Returns the Rect of the image """
@@ -66,4 +75,3 @@ class Projectile(Gameobject):
     def is_destroyed(self):
         """ Checks if object is destroyed """
         return self._is_destroyed
-
