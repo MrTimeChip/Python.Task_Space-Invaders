@@ -3,7 +3,7 @@ from damage_receiver import DamageReceiver
 from explosion import Explosion
 from game import add_gameobject, DEBUG_MODE, active_gameobjects
 from gameobject import Gameobject
-
+from block import Block
 
 class Projectile(Gameobject):
     def __init__(self,
@@ -46,6 +46,9 @@ class Projectile(Gameobject):
                 if isinstance(self._collided_gameobject, DamageReceiver):
                     if not isinstance(self._collided_gameobject, self._shooting_class):
                         self._collided_gameobject.receive_damage(self.damage)
+                        if isinstance(self._collided_gameobject, Block):
+                            self._collided_gameobject.damage_x = self.x
+                            self._collided_gameobject.damage_y = self.y
                         explosion = Explosion(self.x - 3, self.y - 7, window=self._window)
                         add_gameobject(explosion)
                         self._is_destroyed = True

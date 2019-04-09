@@ -43,7 +43,7 @@ class Enemy(Gameobject, DamageReceiver):
             self._move_step_delay -= 10
             self.move()
         if self._timer.start_timer(1000):
-            if random.random() + game.score / 800 > 0.95:
+            if random.random() + game.score / 800 + game.total_score / 1800 > 0.95:
                 self.shoot()
 
     def draw(self, window):
@@ -91,5 +91,6 @@ class Enemy(Gameobject, DamageReceiver):
         """ Checks if object is destroyed """
         if self.health <= 0:
             game.score += self.score
+            game.enemy_count -= 1
             return True
         return False

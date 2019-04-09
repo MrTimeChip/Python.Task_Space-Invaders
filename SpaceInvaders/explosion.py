@@ -16,8 +16,6 @@ class Explosion(Gameobject):
         self.width = width
         self.height = height
         self._window = window
-        self._window_width = window.get_width()
-        self._window_height = window.get_height()
         self.rect = None
         self._sprite_path = sprite_path
         self._timer = Timer()

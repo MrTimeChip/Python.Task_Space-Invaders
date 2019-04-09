@@ -14,15 +14,13 @@ pygame.display.set_caption("Space Invaders")
 
 background.setup_stars(25, 5, win)
 
-player = Player(RES_WIDTH//2 - 30, RES_HEIGHT - 40, 60, 40, window=win)
-for row in range(8):
-    for column in range(3):
-        path = 'Sprites/Enemies/Enemy_' + str(3 - column) + '.png'
-        game.add_gameobject(Enemy(RES_WIDTH//5 + 60*row, RES_HEIGHT//5 + 60*column, 50, 50, window=win, sprite_path=path))
-
+#for row in range(8):
+#    for column in range(3):
+#        path = 'Sprites/Enemies/Enemy_' + str(3 - column) + '.png'
+#        game.add_gameobject(Enemy(RES_WIDTH//5 + 60*row, RES_HEIGHT//5 + 60*column, 50, 50, window=win, sprite_path=path))
 #BOSS = Enemy(190, 250, 100, 100, 200, window=win)
 #game.add_gameobject(BOSS)
+
 game.window = win
-game.player = player
-game.spawn_player()
+game.start_game()
 game.game_loop()
