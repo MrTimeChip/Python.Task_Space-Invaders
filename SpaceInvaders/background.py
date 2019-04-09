@@ -17,7 +17,7 @@ def setup_stars(stars_amount, stars_size, window):
     for i in range(stars_amount):
         x = random.randrange(0, window_width)
         y = random.randrange(0, window_height)
-        color = random.randrange(120, 230)
+        color = random.randrange(80, 180)
         size = random.randrange(stars_size // 3, stars_size)
         stars.append([x, y, color, size])
 
