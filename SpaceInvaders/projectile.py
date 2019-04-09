@@ -5,19 +5,32 @@ from game import add_gameobject, DEBUG_MODE, active_gameobjects
 from gameobject import Gameobject
 from block import Block
 
+
 class Projectile(Gameobject):
+    """
+    A simple projectile class, that can collide with objects and deal damage.
+    """
     def __init__(self,
                  x: int,
                  y: int,
-                 speed: int,
                  shooting_class,
-                 damage: int = 1,
                  width: int = 20,
                  height: int = 20,
+                 speed: int = 10,
+                 damage: int = 1,
                  window=None,
                  sprite_path: str = 'Sprites/Effects/Bullet.png'):
         """
-        :type shooting_class: class
+        Initializes the projectile.
+        :param x: x coordinate to spawn at.
+        :param y: y coordinate to spawn at.
+        :param shooting_class: class, that shot the projectile.
+        :param width: sprite width.
+        :param height: sprite height.
+        :param speed: projectile speed.
+        :param damage: damage to deal.
+        :param window: window to render in.
+        :param sprite_path: path to the player sprite.
         """
         self.x = x
         self.y = y
@@ -65,8 +78,14 @@ class Projectile(Gameobject):
         """ Returns the Rect of the image """
         return self.rect
 
-    def is_collided(self, objects_list):
-        """ Check if collided with any gameobject """
+    def is_collided(self, objects_list) -> bool:
+        """
+        Checks if the projectile has collided with anything.
+        True, if collided
+        False, otherwise
+        :param objects_list: list of all gameobjects.
+        :return: bool
+        """
         is_collided = False
         for obj in objects_list:
             if not obj.get_rect() == None:

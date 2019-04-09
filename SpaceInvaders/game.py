@@ -4,36 +4,53 @@ import background
 import level
 from gameobject import Gameobject
 
+pygame.font.init()
+clock = pygame.time.Clock()
+
 DEBUG_MODE = True
+FPS = 60
+
 GAME_OVER = False
 GAME_WIN = False
 GAME_END = False
 
 enemy_count = 0
+
 score = 0
 total_score = 0
-FPS = 60
+
 current_level = None
-pygame.font.init()
-active_gameobjects = []
+
+
 window = None
 player = None
-clock = pygame.time.Clock()
+
+active_gameobjects = []
+
 font = pygame.font.SysFont('Impact', 30)
 game_over_font = pygame.font.SysFont('Impact', 80)
 
 
 def add_gameobject(gameobject: Gameobject):
+    """
+    Adds gameobject to the game.
+    (Adds to the active_gameobjects list)
+    :param gameobject: gameobject to add.
+    """
     if not isinstance(gameobject, Gameobject):
         raise ValueError('The object was not a gameobject!')
     active_gameobjects.append(gameobject)
 
 
 def spawn_player():
+    """Spawns a player"""
     add_gameobject(player)
 
 
 def handle_events():
+    """
+    Handles the events of pygame.
+    """
     global GAME_OVER
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -47,6 +64,11 @@ def handle_events():
 
 
 def start_game(level_name: str = 'first'):
+    """
+    Starts a game from the beginning.
+    :param level_name: a level name to start with. ('first' by def.)
+        (for all level names, see level.py)
+    """
     global GAME_OVER, GAME_WIN, current_level, score, total_score
     if level_name == 'end':
         end_game()
@@ -62,6 +84,9 @@ def start_game(level_name: str = 'first'):
 
 
 def end_game():
+    """
+    Ends the game.
+    """
     global GAME_END, GAME_WIN, GAME_OVER, score, total_score
     GAME_WIN = False
     GAME_OVER = False
@@ -71,11 +96,17 @@ def end_game():
 
 
 def draw_fps():
+    """
+    Draws FPS onto the screen.
+    """
     fps = font.render(str(int(clock.get_fps())), True, pygame.Color('white'))
     window.blit(fps, (25, 25))
 
 
 def draw_game_over():
+    """
+    Draws Game over onto the screen.
+    """
     game_over_text = game_over_font.render('YOU DIED', True, pygame.Color('white'))
     window.blit(game_over_text, (window.get_width()//2 - 140, window.get_height()//2 - 100))
     continue_text = font.render('CONTINUE?', True, pygame.Color('white'))
@@ -83,6 +114,9 @@ def draw_game_over():
 
 
 def draw_game_end():
+    """
+    Draws Game end onto the screen.
+    """
     game_end_text = game_over_font.render("YOU'VE FINISHED!", True, pygame.Color('white'))
     window.blit(game_end_text, (window.get_width()//2 - 240, window.get_height()//2 - 100))
     congrats_text = font.render('CONGRATULATIONS!', True, pygame.Color('white'))
@@ -92,6 +126,9 @@ def draw_game_end():
 
 
 def draw_game_win():
+    """
+    Draws Game win onto the screen.
+    """
     game_over_text = game_over_font.render('YOU WON!', True, pygame.Color('white'))
     window.blit(game_over_text, (window.get_width()//2 - 140, window.get_height()//2 - 100))
     next_lvl_text = font.render('NEXT LEVEL?', True, pygame.Color('white'))
@@ -99,6 +136,10 @@ def draw_game_win():
 
 
 def draw_interface():
+    """
+    Draws all of the interface to the screen.
+    Handles all 'draw_' functions.
+    """
     window.fill((0, 0, 0))
     if DEBUG_MODE:
         draw_fps()
@@ -117,6 +158,10 @@ def draw_interface():
 
 
 def update_gameobjects():
+    """
+    Updates all gameobjects in active_gameobjects,
+    by calling an Update function.
+    """
     global GAME_WIN
     if enemy_count == 0:
         GAME_WIN = True
@@ -136,6 +181,9 @@ def update_gameobjects():
 
 
 def game_loop():
+    """
+    The main loop of the game.
+    """
     while True:
         clock.tick(FPS)
 

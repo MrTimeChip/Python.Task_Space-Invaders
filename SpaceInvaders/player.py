@@ -19,13 +19,15 @@ class Player(Gameobject, DamageReceiver):
                  window=None,
                  sprite_path: str = 'Sprites/Player/Player.png'):
         """
-         Creating a new player instance.
-
-         x = x position
-         y = y position
-         width = width of the player
-         height = height of the player
-         speed = speed of the player (5 by default)
+        Initializes player.
+        :param x: x coordinate to spawn at.
+        :param y: y coordinate to spawn at.
+        :param width: sprite width.
+        :param height: sprite height.
+        :param health: player health.
+        :param speed: player speed.
+        :param window: window to render in.
+        :param sprite_path: path to the player sprite.
         """
         self.x = x
         self.y = y
@@ -56,7 +58,10 @@ class Player(Gameobject, DamageReceiver):
         return self.rect
 
     def move(self, direction):
-        """ Moves player in a certain direction (using speed) """
+        """
+        Moves player in a certain direction.
+        :param direction: LEFT, RIGHT, UP, DOWN
+        """
         if direction not in self._move_directions:
             raise ValueError('Wrong direction!')
         else:
@@ -72,13 +77,20 @@ class Player(Gameobject, DamageReceiver):
 
     def shoot(self):
         """ Shoots a projectile """
-        bullet = projectile.Projectile(self.x + self.width//2 - 5, self.y - self.height, 10, Player, window=self._window)
+        bullet = projectile.Projectile(self.x + self.width//2 - 5, self.y - self.height, Player, 10, window=self._window)
         game.add_gameobject(bullet)
 
     def receive_damage(self, damage: int):
+        """
+        Receives damage.
+        :param damage: damage to substract from health.
+        """
         self.health -= damage
 
     def handle_keys(self):
+        """
+        Handles player key input.
+        """
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             self.move('LEFT')
@@ -89,14 +101,25 @@ class Player(Gameobject, DamageReceiver):
                 self.shoot()
 
     def is_destroyed(self):
-        """ Checks if object is destroyed """
+        """
+        Checks if player is destroyed.
+        True, if health <= 0
+        False, otherwise
+        :return: bool
+        """
         if self.health <= 0:
             game.GAME_OVER = True
             return True
         return False
 
     def is_in_bounds(self, direction) -> bool:
-        """ Checks if player is in bounds of display when moving """
+        """
+        Checks if player is in bounds of screen.
+        True, if in bounds
+        False, otherwise
+        :param direction: LEFT, RIGHT, UP, DOWN
+        :return: bool
+        """
         if direction not in self._move_directions:
             raise ValueError('Wrong direction!')
         else:

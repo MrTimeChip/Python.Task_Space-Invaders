@@ -12,7 +12,16 @@ enemies_sprite_paths ={
 
 
 class Level:
+    """ Level class """
     def __init__(self, name: str, level_str: str, next_level_name: str = None, shift_x: int = 0, shift_y: int = 0):
+        """
+        Initializes new level.
+        :param name: level name (used for level loading).
+        :param level_str: level as a string.
+        :param next_level_name: the name of the next level.
+        :param shift_x: shift of the enemies on x-axis.
+        :param shift_y: shift of the enemies on y-axis.
+        """
         self.name = name
         self.level_str = level_str
         self.next_level_name = next_level_name
@@ -21,6 +30,11 @@ class Level:
 
 
 def load_level(level_name: str, window):
+    """
+    Load a level from levels.
+    :param level_name: name of the level.
+    :param window: window to render in.
+    """
     screen_width = window.get_width()
     screen_height = window.get_height()
     game.enemy_count = 0

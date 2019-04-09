@@ -4,6 +4,9 @@ from timer import Timer
 
 
 class Explosion(Gameobject):
+    """
+    Explosion class. A simple effect.
+    """
     def __init__(self,
                  x: int,
                  y: int,
@@ -11,6 +14,15 @@ class Explosion(Gameobject):
                  height: int = 15,
                  window=None,
                  sprite_path: str = 'Sprites/Effects/Explosion.png'):
+        """
+        Initializes the explosion.
+        :param x: x coordinate to spawn at.
+        :param y: y coordinate to spawn at.
+        :param width: sprite width.
+        :param height: sprite height.
+        :param window: window to render in.
+        :param sprite_path: path to the player sprite.
+        """
         self.x = x
         self.y = y
         self.width = width
@@ -35,5 +47,10 @@ class Explosion(Gameobject):
         self.draw(self._window)
 
     def is_destroyed(self):
-        """ Checks if object is destroyed """
+        """
+        Checks if explosion is destroyed.
+        True, if 100ms passed since initializing
+        False, otherwise
+        :return:
+        """
         return self._timer.start_timer(100)

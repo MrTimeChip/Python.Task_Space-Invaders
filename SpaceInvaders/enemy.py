@@ -8,6 +8,7 @@ from timer import Timer
 
 
 class Enemy(Gameobject, DamageReceiver):
+    """Simple enemy class."""
     def __init__(self,
                  x: int,
                  y: int,
@@ -18,6 +19,18 @@ class Enemy(Gameobject, DamageReceiver):
                  score: int = 10,
                  window=None,
                  sprite_path: str = 'Sprites/Enemies/Enemy_3.png'):
+        """
+        Initializes enemy.
+        :param x: x coordinate to spawn at.
+        :param y: y coordinate to spawn at.
+        :param width: sprite width.
+        :param height: sprite height.
+        :param health: enemy health.
+        :param speed: enemy speed.
+        :param score: amount of score given for the kill.
+        :param window: window to render in.
+        :param sprite_path: path to the enemy sprite.
+        """
         self.x = x
         self.y = y
         self.width = width
@@ -55,6 +68,9 @@ class Enemy(Gameobject, DamageReceiver):
             pygame.draw.rect(window, pygame.Color('red'), self.rect, 3)
 
     def move(self):
+        """
+        Move enemy in a certain way.
+        """
         self.x += self.speed * self._move_multiplier
         self.y += self.speed//5
         self.change_sprite()
@@ -69,11 +85,15 @@ class Enemy(Gameobject, DamageReceiver):
         return self.rect
 
     def receive_damage(self, damage: int):
+        """
+        Receives damage.
+        :param damage: damage to substract from health.
+        """
         self.health -= damage
 
     def shoot(self):
         """ Shoots a projectile """
-        bullet = Projectile(self.x + self.width//2 - 9, self.y + self.height, -10, Enemy, window=self._window)
+        bullet = Projectile(self.x + self.width//2 - 9, self.y + self.height, Enemy, -10, window=self._window)
         self.change_sprite()
         game.add_gameobject(bullet)
 
@@ -87,8 +107,14 @@ class Enemy(Gameobject, DamageReceiver):
         else:
             self._first_sprite = False
 
-    def is_destroyed(self):
-        """ Checks if object is destroyed """
+    def is_destroyed(self) -> bool:
+        """
+        Checks if object is destroyed.
+        Adds score to the game and updates enemy count.
+        True, if health <= 0
+        False, otherwise
+        :return: bool
+        """
         if self.health <= 0:
             game.score += self.score
             game.enemy_count -= 1

@@ -11,6 +11,9 @@ damage_sprites ={
 
 
 class Block(Gameobject, DamageReceiver):
+    """
+    Block clas. The only defence for the player.
+    """
     def __init__(self,
                  x: int,
                  y: int,
@@ -19,6 +22,16 @@ class Block(Gameobject, DamageReceiver):
                  health: int = 10,
                  window=None,
                  sprite_path: str = 'Sprites/Player/Block.png'):
+        """
+        Initializes the block.
+        :param x: x coordinate to spawn at.
+        :param y: y coordinate to spawn at.
+        :param width: sprite width.
+        :param height: sprite height.
+        :param health: block health.
+        :param window: window to render in.
+        :param sprite_path: path to the player sprite.
+        """
         self.x = x
         self.y = y
         self.width = width
@@ -32,6 +45,7 @@ class Block(Gameobject, DamageReceiver):
         self.rect = None
 
     def get_rect(self):
+        """ Returns the Rect of the image """
         return self.rect
 
     def draw(self, window):
@@ -42,12 +56,23 @@ class Block(Gameobject, DamageReceiver):
         window.blit(image, (self.x, self.y))
 
     def update(self):
+        """ Called every tick """
         self.draw(self._window)
 
     def is_destroyed(self):
+        """
+        Checks if block is destroyed.
+        True, if health <= 0
+        False, otherwise
+        :return:
+        """
         return self.health <= 0
 
     def receive_damage(self, damage: int):
+        """
+        Receives damage.
+        :param damage: damage to substract from health.
+        """
         sprite_number = random.randint(1, 2)
         game.add_gameobject(BlockDamage(self.damage_x,
                                         self.damage_y,
@@ -57,6 +82,7 @@ class Block(Gameobject, DamageReceiver):
 
 
 class BlockDamage(Gameobject):
+    """A block damage object, that looks cool. (No)"""
     def __init__(self,
                  x: int,
                  y: int,
@@ -65,6 +91,16 @@ class BlockDamage(Gameobject):
                  height: int = 30,
                  window=None,
                  sprite_path: str = 'Sprites/Effects/Block_damage_1.png'):
+        """
+        Initializes the block damage.
+        :param x: x coordinate to spawn at.
+        :param y: y coordinate to spawn at.
+        :param parent_block: block, from which it was spawned.
+        :param width: sprite width.
+        :param height: sprite height.
+        :param window: window to render in.
+        :param sprite_path: path to the block damage sprite.
+        """
         self.x = x
         self.y = y
         self.width = width
@@ -75,6 +111,7 @@ class BlockDamage(Gameobject):
         self.rect = None
 
     def get_rect(self):
+        """ Returns the Rect of the image """
         return self.rect
 
     def draw(self, window):
@@ -84,8 +121,14 @@ class BlockDamage(Gameobject):
         window.blit(image, (self.x, self.y))
 
     def update(self):
+        """Called every tick"""
         self.draw(self._window)
 
     def is_destroyed(self):
-        """ Checks if object is destroyed """
+        """
+        Checks if the block damage is destroyed.
+        True, if parent block is destroyed
+        False, otherwise
+        :return:
+        """
         return self.parent_block.is_destroyed()
