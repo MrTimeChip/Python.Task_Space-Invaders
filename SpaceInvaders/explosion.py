@@ -1,9 +1,9 @@
 from gameobject import Gameobject
 import pygame
+from timer import Timer
 
 
 class Explosion(Gameobject):
-
     def __init__(self,
                  x: int,
                  y: int,
@@ -19,8 +19,8 @@ class Explosion(Gameobject):
         self._window_width = window.get_width()
         self._window_height = window.get_height()
         self.rect = None
-        self._start_tick = pygame.time.get_ticks()
         self._sprite_path = sprite_path
+        self._timer = Timer()
 
     def get_rect(self):
         """ Returns the Rect of the image """
@@ -38,4 +38,4 @@ class Explosion(Gameobject):
 
     def is_destroyed(self):
         """ Checks if object is destroyed """
-        return pygame.time.get_ticks() - self._start_tick > 100
+        return self._timer.start_timer(100)

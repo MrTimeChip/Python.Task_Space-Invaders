@@ -1,7 +1,7 @@
 import pygame
 from damage_receiver import DamageReceiver
 from explosion import Explosion
-from game import current_drawable_objects, add_gameobject
+from game import add_gameobject, DEBUG_MODE, active_gameobjects
 from gameobject import Gameobject
 
 
@@ -42,7 +42,7 @@ class Projectile(Gameobject):
             if self.y < 0 or self.y > self._window.get_height():
                 self._is_destroyed = True
 
-            if self.is_collided(current_drawable_objects):
+            if self.is_collided(active_gameobjects):
                 if isinstance(self._collided_gameobject, DamageReceiver):
                     if not isinstance(self._collided_gameobject, self._shooting_class):
                         self._collided_gameobject.receive_damage(self.damage)
@@ -55,7 +55,8 @@ class Projectile(Gameobject):
         image = pygame.transform.scale(pygame.image.load(self._sprite_path), (self.width, self.height))
         self.rect = image.get_rect(left=self.x, top=self.y)
         window.blit(image, (self.x, self.y))
-        pygame.draw.rect(window, pygame.Color('green'), self.rect, 3)
+        if DEBUG_MODE:
+            pygame.draw.rect(window, pygame.Color('green'), self.rect, 3)
 
     def get_rect(self):
         """ Returns the Rect of the image """

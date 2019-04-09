@@ -48,7 +48,8 @@ class Player(Gameobject, DamageReceiver):
         image = pygame.transform.scale(pygame.image.load(self._sprite_path), (self.width, self.height))
         self.rect = image.get_rect(left=self.x, top=self.y)
         window.blit(image, (self.x, self.y))
-        pygame.draw.rect(window, pygame.Color('white'), self.rect, 3)
+        if game.DEBUG_MODE:
+            pygame.draw.rect(window, pygame.Color('white'), self.rect, 3)
 
     def get_rect(self):
         """ Returns the Rect of the image """
@@ -89,7 +90,10 @@ class Player(Gameobject, DamageReceiver):
 
     def is_destroyed(self):
         """ Checks if object is destroyed """
-        return self.health <= 0
+        if self.health <= 0:
+            game.GAME_OVER = True
+            return True
+        return False
 
     def is_in_bounds(self, direction) -> bool:
         """ Checks if player is in bounds of display when moving """

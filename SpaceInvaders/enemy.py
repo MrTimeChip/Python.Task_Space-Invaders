@@ -43,7 +43,7 @@ class Enemy(Gameobject, DamageReceiver):
             self._move_step_delay -= 10
             self.move()
         if self._timer.start_timer(1000):
-            if random.random() > 0.97:
+            if random.random() + game.score / 800 > 0.95:
                 self.shoot()
 
     def draw(self, window):
@@ -51,7 +51,8 @@ class Enemy(Gameobject, DamageReceiver):
         image = pygame.transform.scale(pygame.image.load(self._sprite_path), (self.width, self.height))
         self.rect = image.get_rect(left=self.x, top=self.y)
         window.blit(image, (self.x, self.y))
-        pygame.draw.rect(window, pygame.Color('red'), self.rect, 3)
+        if game.DEBUG_MODE:
+            pygame.draw.rect(window, pygame.Color('red'), self.rect, 3)
 
     def move(self):
         self.x += self.speed * self._move_multiplier
