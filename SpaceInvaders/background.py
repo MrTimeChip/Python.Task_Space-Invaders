@@ -4,7 +4,7 @@ import pygame
 stars = []
 
 
-def setup_stars(stars_amount, stars_size, window):
+def setup_stars(stars_amount, stars_size, window_width, window_height):
     """
     Setting up stars.
 
@@ -12,8 +12,6 @@ def setup_stars(stars_amount, stars_size, window):
     stars_size = size of star (range from star_size // 3 to star_size)
     window = window to draw in
     """
-    window_width = window.get_width()
-    window_height = window.get_height()
     for i in range(stars_amount):
         x = random.randrange(0, window_width)
         y = random.randrange(0, window_height)

@@ -2,12 +2,19 @@ import pygame
 import sys
 import background
 import level
+import sound
+from timer import Timer
 from gameobject import Gameobject
 
 pygame.font.init()
+pygame.mixer.init()
 clock = pygame.time.Clock()
+timer_screen = Timer()
 
-DEBUG_MODE = True
+RES_WIDTH = 800
+RES_HEIGHT = 600
+
+DEBUG_MODE = False
 FPS = 60
 
 GAME_OVER = False
@@ -16,7 +23,7 @@ GAME_END = False
 
 enemy_count = 0
 
-score = 0
+current_score = 0
 total_score = 0
 
 current_level = None
@@ -29,6 +36,8 @@ active_gameobjects = []
 
 font = pygame.font.SysFont('Impact', 30)
 game_over_font = pygame.font.SysFont('Impact', 80)
+
+background.setup_stars(25, 5, RES_WIDTH, RES_HEIGHT)
 
 
 def add_gameobject(gameobject: Gameobject):
@@ -58,9 +67,11 @@ def handle_events():
             sys.exit()
         if event.type == pygame.KEYDOWN:
             if GAME_OVER:
-                start_game()
+                if timer_screen.start_timer(700):
+                    start_game()
             if GAME_WIN:
-                start_game(current_level.next_level_name)
+                if timer_screen.start_timer(700):
+                    start_game(current_level.next_level_name)
 
 
 def start_game(level_name: str = 'first'):
@@ -69,14 +80,14 @@ def start_game(level_name: str = 'first'):
     :param level_name: a level name to start with. ('first' by def.)
         (for all level names, see level.py)
     """
-    global GAME_OVER, GAME_WIN, current_level, score, total_score
+    global GAME_OVER, GAME_WIN, current_level, current_score, total_score
     if level_name == 'end':
         end_game()
         return
     if level_name == 'first':
         total_score = 0
-    total_score += score
-    score = 0
+    total_score += current_score
+    current_score = 0
     GAME_OVER = False
     GAME_WIN = False
     current_level = level.levels[level_name]
@@ -87,12 +98,12 @@ def end_game():
     """
     Ends the game.
     """
-    global GAME_END, GAME_WIN, GAME_OVER, score, total_score
+    global GAME_END, GAME_WIN, GAME_OVER, current_score, total_score
     GAME_WIN = False
     GAME_OVER = False
     GAME_END = True
-    total_score += score
-    score = 0
+    total_score += current_score
+    current_score = 0
 
 
 def draw_fps():
@@ -108,9 +119,9 @@ def draw_game_over():
     Draws Game over onto the screen.
     """
     game_over_text = game_over_font.render('YOU DIED', True, pygame.Color('white'))
-    window.blit(game_over_text, (window.get_width()//2 - 140, window.get_height()//2 - 100))
-    continue_text = font.render('CONTINUE?', True, pygame.Color('white'))
-    window.blit(continue_text, (window.get_width() // 2 - 130, window.get_height() // 2))
+    window.blit(game_over_text, (RES_WIDTH//2 - 140, RES_HEIGHT//2 - 100))
+    continue_text = font.render('RESTART?', True, pygame.Color('white'))
+    window.blit(continue_text, (RES_WIDTH // 2 - 130, RES_HEIGHT // 2))
 
 
 def draw_game_end():
@@ -118,11 +129,11 @@ def draw_game_end():
     Draws Game end onto the screen.
     """
     game_end_text = game_over_font.render("YOU'VE FINISHED!", True, pygame.Color('white'))
-    window.blit(game_end_text, (window.get_width()//2 - 240, window.get_height()//2 - 100))
+    window.blit(game_end_text, (RES_WIDTH//2 - 270, RES_HEIGHT//2 - 100))
     congrats_text = font.render('CONGRATULATIONS!', True, pygame.Color('white'))
-    window.blit(congrats_text, (window.get_width() // 2 - 120, window.get_height() // 2))
+    window.blit(congrats_text, (RES_WIDTH // 2 - 120, RES_HEIGHT // 2))
     total_score_text = font.render('TOTAL SCORE: ' + str(total_score), True, pygame.Color('white'))
-    window.blit(total_score_text, (window.get_width() // 2 - 100, window.get_height() // 2 + 50))
+    window.blit(total_score_text, (RES_WIDTH // 2 - 100, RES_HEIGHT // 2 + 50))
 
 
 def draw_game_win():
@@ -130,9 +141,9 @@ def draw_game_win():
     Draws Game win onto the screen.
     """
     game_over_text = game_over_font.render('YOU WON!', True, pygame.Color('white'))
-    window.blit(game_over_text, (window.get_width()//2 - 140, window.get_height()//2 - 100))
+    window.blit(game_over_text, (RES_WIDTH//2 - 140, RES_HEIGHT//2 - 100))
     next_lvl_text = font.render('NEXT LEVEL?', True, pygame.Color('white'))
-    window.blit(next_lvl_text, (window.get_width() // 2 - 130, window.get_height() // 2))
+    window.blit(next_lvl_text, (RES_WIDTH // 2 - 130, RES_HEIGHT // 2))
 
 
 def draw_interface():
@@ -144,10 +155,11 @@ def draw_interface():
     if DEBUG_MODE:
         draw_fps()
 
-    player_health_text = font.render('hp: ' + str(player.health), True, pygame.Color('white'))
-    window.blit(player_health_text, (25, window.get_height() - 50))
-    player_score_text = font.render('score: ' + str(score), True, pygame.Color('white'))
-    window.blit(player_score_text, (window.get_width()//2 - 60, 25))
+    if not GAME_OVER and not GAME_WIN and not GAME_END:
+        player_health_text = font.render('HP: ' + str(player.health), True, pygame.Color('white'))
+        window.blit(player_health_text, (25, RES_HEIGHT - 50))
+        player_score_text = font.render('Score: ' + str(current_score), True, pygame.Color('white'))
+        window.blit(player_score_text, (RES_WIDTH//2 - 60, 25))
 
     if GAME_END:
         draw_game_end()
@@ -162,9 +174,11 @@ def update_gameobjects():
     Updates all gameobjects in active_gameobjects,
     by calling an Update function.
     """
-    global GAME_WIN
+    global GAME_WIN, enemy_count
     if enemy_count == 0:
+        sound.play_game_win()
         GAME_WIN = True
+        enemy_count = -1
 
     draw_interface()
     background.draw_stars(0.3, window)

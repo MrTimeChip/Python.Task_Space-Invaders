@@ -4,7 +4,7 @@ import pygame
 import random
 import game
 
-damage_sprites ={
+damage_sprites = {
     '1': 'Sprites/Effects/Block_damage_1.png',
     '2': 'Sprites/Effects/Block_damage_2.png'
 }
@@ -54,6 +54,8 @@ class Block(Gameobject, DamageReceiver):
         self._image = image
         self.rect = image.get_rect(left=self.x, top=self.y)
         window.blit(image, (self.x, self.y))
+        if game.DEBUG_MODE:
+            pygame.draw.rect(window, pygame.Color('yellow'), self.rect, 3)
 
     def update(self):
         """ Called every tick """
@@ -79,6 +81,7 @@ class Block(Gameobject, DamageReceiver):
                                         self,
                                         sprite_path=damage_sprites[str(sprite_number)],
                                         window=self._window))
+        self.health -= damage
 
 
 class BlockDamage(Gameobject):
@@ -119,6 +122,8 @@ class BlockDamage(Gameobject):
         image = pygame.transform.scale(pygame.image.load(self._sprite_path), (self.width, self.height))
         self.rect = image.get_rect(left=self.x, top=self.y)
         window.blit(image, (self.x, self.y))
+        if game.DEBUG_MODE:
+            pygame.draw.rect(window, pygame.Color('blue'), self.rect, 3)
 
     def update(self):
         """Called every tick"""

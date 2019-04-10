@@ -1,10 +1,10 @@
 import pygame
 import projectile
 import game
+import sound
 from damage_receiver import DamageReceiver
 from gameobject import Gameobject
 from timer import Timer
-
 
 class Player(Gameobject, DamageReceiver):
     _move_directions = ['LEFT', 'RIGHT', 'UP', 'DOWN']
@@ -77,7 +77,12 @@ class Player(Gameobject, DamageReceiver):
 
     def shoot(self):
         """ Shoots a projectile """
-        bullet = projectile.Projectile(self.x + self.width//2 - 5, self.y - self.height, Player, 10, window=self._window)
+        sound.play_laser_shot()
+        bullet = projectile.Projectile(self.x + self.width//2 - 5,
+                                       self.y - self.height,
+                                       Player,
+                                       10,
+                                       window=self._window)
         game.add_gameobject(bullet)
 
     def receive_damage(self, damage: int):
@@ -109,6 +114,7 @@ class Player(Gameobject, DamageReceiver):
         """
         if self.health <= 0:
             game.GAME_OVER = True
+            sound.play_explosion()
             return True
         return False
 

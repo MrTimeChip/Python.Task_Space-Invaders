@@ -1,9 +1,10 @@
-from gameobject import Gameobject
-from damage_receiver import DamageReceiver
-from projectile import Projectile
 import game
 import pygame
 import random
+import sound
+from gameobject import Gameobject
+from damage_receiver import DamageReceiver
+from projectile import Projectile
 from timer import Timer
 
 
@@ -16,7 +17,7 @@ class Enemy(Gameobject, DamageReceiver):
                  height: int = 25,
                  health: int = 1,
                  speed: int = 5,
-                 score: int = 10,
+                 current_score: int = 10,
                  window=None,
                  sprite_path: str = 'Sprites/Enemies/Enemy_3.png'):
         """
@@ -27,7 +28,7 @@ class Enemy(Gameobject, DamageReceiver):
         :param height: sprite height.
         :param health: enemy health.
         :param speed: enemy speed.
-        :param score: amount of score given for the kill.
+        :param current_score: amount of current_score given for the kill.
         :param window: window to render in.
         :param sprite_path: path to the enemy sprite.
         """
@@ -39,7 +40,7 @@ class Enemy(Gameobject, DamageReceiver):
         self._window = window
         self.speed = speed
         self.rect = None
-        self.score = score
+        self.current_score = current_score
         self._sprite_path = sprite_path
         self._sprite_path_second = sprite_path[:-4] + '_2.png'
         self._first_sprite = True
@@ -52,11 +53,13 @@ class Enemy(Gameobject, DamageReceiver):
     def update(self):
         """ Called every tick """
         self.draw(self._window)
+        if self.y > self._window.get_height():
+            game.GAME_OVER = True
         if self._move_step_timer.start_timer(self._move_step_delay + random.randint(50, 100)):
             self._move_step_delay -= 10
             self.move()
         if self._timer.start_timer(1000):
-            if random.random() + game.score / 800 + game.total_score / 1800 > 0.95:
+            if random.random() + game.current_score / 800 + game.total_score / 1800 > 0.95:
                 self.shoot()
 
     def draw(self, window):
@@ -93,7 +96,8 @@ class Enemy(Gameobject, DamageReceiver):
 
     def shoot(self):
         """ Shoots a projectile """
-        bullet = Projectile(self.x + self.width//2 - 9, self.y + self.height, Enemy, -10, window=self._window)
+        sound.play_laser_shot(0.6)
+        bullet = Projectile(self.x + self.width//2 - 9, self.y + self.height, Enemy, speed=-10, window=self._window)
         self.change_sprite()
         game.add_gameobject(bullet)
 
@@ -110,13 +114,15 @@ class Enemy(Gameobject, DamageReceiver):
     def is_destroyed(self) -> bool:
         """
         Checks if object is destroyed.
-        Adds score to the game and updates enemy count.
+        Adds current_score to the game and updates enemy count.
         True, if health <= 0
         False, otherwise
         :return: bool
         """
         if self.health <= 0:
-            game.score += self.score
+            sound.play_explosion()
+            game.current_score += self.current_score
             game.enemy_count -= 1
+            sound.play_explosion(0.5)
             return True
         return False
