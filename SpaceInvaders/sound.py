@@ -25,3 +25,9 @@ def play_game_win(volume: float = 1.0):
     game_win_sound = pygame.mixer.Sound('Sounds/game_win.wav')
     game_win_sound.set_volume(volume)
     game_win_sound.play()
+
+
+def play_main_menu_theme(volume: float = 1.0):
+    main_menu_theme = pygame.mixer.Sound('Sounds/main_menu_theme.wav')
+    main_menu_theme.set_volume(volume)
+    main_menu_theme.play(loops=-1)

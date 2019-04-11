@@ -66,6 +66,7 @@ def load_level(level_name: str, window):
 
 
 levels = {
+    'main_menu': Level('main_menu', '0', 'first'),
     'first': Level('first', '3333n2222n1111', 'second', shift_y=-100),
     'second': Level('second', '33333n02220n11111', 'third', -25, -100),
     'third': Level('third', '0303030n3030303n0202020n1010101', 'end', -100, -100)

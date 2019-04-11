@@ -17,6 +17,8 @@ RES_HEIGHT = 600
 DEBUG_MODE = False
 FPS = 60
 
+GAME_MODE = False
+
 GAME_OVER = False
 GAME_WIN = False
 GAME_END = False
@@ -72,20 +74,27 @@ def handle_events():
             if GAME_WIN:
                 if timer_screen.start_timer(700):
                     start_game(current_level.next_level_name)
+            if current_level.name == 'main_menu':
+                start_game(current_level.next_level_name)
 
 
-def start_game(level_name: str = 'first'):
+def start_game(level_name: str = 'main_menu'):
     """
     Starts a game from the beginning.
     :param level_name: a level name to start with. ('first' by def.)
         (for all level names, see level.py)
     """
-    global GAME_OVER, GAME_WIN, current_level, current_score, total_score
+    global GAME_OVER, GAME_WIN, current_level, current_score, total_score, enemy_count, GAME_MODE
+    GAME_MODE = True
+    pygame.mixer.stop()
     if level_name == 'end':
         end_game()
         return
     if level_name == 'first':
         total_score = 0
+    if level_name == 'main_menu':
+        GAME_MODE = False
+        sound.play_main_menu_theme()
     total_score += current_score
     current_score = 0
     GAME_OVER = False
@@ -146,6 +155,18 @@ def draw_game_win():
     window.blit(next_lvl_text, (RES_WIDTH // 2 - 130, RES_HEIGHT // 2))
 
 
+def draw_main_menu():
+    """
+    Draws main menu onto the screen.
+    """
+    space_invaders_image = pygame.transform.scale(pygame.image.load('Sprites/main_menu_logo.png'), (500, 500))
+    window.blit(space_invaders_image, (RES_WIDTH//2 - 350, RES_HEIGHT//2 - 280))
+    start_game_text = game_over_font.render('START GAME?', True, pygame.Color('white'))
+    window.blit(start_game_text, (RES_WIDTH // 2 - 50, RES_HEIGHT // 2 + 190))
+    enemy_sprite = pygame.transform.scale(pygame.image.load('Sprites/Enemies/Enemy_2.png'), (100, 100))
+    window.blit(enemy_sprite, (RES_WIDTH // 2 + 270, RES_HEIGHT // 2))
+
+
 def draw_interface():
     """
     Draws all of the interface to the screen.
@@ -155,7 +176,10 @@ def draw_interface():
     if DEBUG_MODE:
         draw_fps()
 
-    if not GAME_OVER and not GAME_WIN and not GAME_END:
+    if current_level.name == 'main_menu':
+        draw_main_menu()
+
+    if not GAME_OVER and not GAME_WIN and not GAME_END and GAME_MODE:
         player_health_text = font.render('HP: ' + str(player.health), True, pygame.Color('white'))
         window.blit(player_health_text, (25, RES_HEIGHT - 50))
         player_score_text = font.render('Score: ' + str(current_score), True, pygame.Color('white'))
@@ -175,7 +199,7 @@ def update_gameobjects():
     by calling an Update function.
     """
     global GAME_WIN, enemy_count
-    if enemy_count == 0:
+    if enemy_count == 0 and not current_level.name == 'main_menu':
         sound.play_game_win()
         GAME_WIN = True
         enemy_count = -1
@@ -183,7 +207,7 @@ def update_gameobjects():
     draw_interface()
     background.draw_stars(0.3, window)
 
-    if not GAME_OVER and not GAME_WIN and not GAME_END:
+    if not GAME_OVER and not GAME_WIN and not GAME_END and GAME_MODE:
         for obj in active_gameobjects:
             if obj.is_destroyed():
                 active_gameobjects.remove(obj)
