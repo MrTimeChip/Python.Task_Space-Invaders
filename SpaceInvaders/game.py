@@ -14,7 +14,7 @@ timer_screen = Timer()
 RES_WIDTH = 800
 RES_HEIGHT = 600
 
-DEBUG_MODE = False
+DEBUG_MODE = True
 FPS = 60
 
 GAME_MODE = False
@@ -40,6 +40,14 @@ font = pygame.font.SysFont('Impact', 30)
 game_over_font = pygame.font.SysFont('Impact', 80)
 
 background.setup_stars(25, 5, RES_WIDTH, RES_HEIGHT)
+
+
+def clean_gameobjects():
+    """
+    Deletes all gameobjects
+    """
+    global active_gameobjects
+    active_gameobjects = []
 
 
 def add_gameobject(gameobject: Gameobject):
@@ -84,7 +92,14 @@ def start_game(level_name: str = 'main_menu'):
     :param level_name: a level name to start with. ('first' by def.)
         (for all level names, see level.py)
     """
-    global GAME_OVER, GAME_WIN, current_level, current_score, total_score, enemy_count, GAME_MODE
+    global \
+        GAME_OVER, \
+        GAME_WIN, \
+        current_level, \
+        current_score, \
+        total_score, \
+        enemy_count, \
+        GAME_MODE
     GAME_MODE = True
     pygame.mixer.stop()
     if level_name == 'end':
@@ -119,7 +134,8 @@ def draw_fps():
     """
     Draws FPS onto the screen.
     """
-    fps = font.render(str(int(clock.get_fps())), True, pygame.Color('white'))
+    fps = font.render(str(int(clock.get_fps())), True,
+                      pygame.Color('white'))
     window.blit(fps, (25, 25))
 
 
@@ -127,9 +143,11 @@ def draw_game_over():
     """
     Draws Game over onto the screen.
     """
-    game_over_text = game_over_font.render('YOU DIED', True, pygame.Color('white'))
+    game_over_text = game_over_font.render('YOU DIED', True,
+                                           pygame.Color('white'))
     window.blit(game_over_text, (RES_WIDTH//2 - 140, RES_HEIGHT//2 - 100))
-    continue_text = font.render('RESTART?', True, pygame.Color('white'))
+    continue_text = font.render('RESTART?', True,
+                                pygame.Color('white'))
     window.blit(continue_text, (RES_WIDTH // 2 - 130, RES_HEIGHT // 2))
 
 
@@ -137,11 +155,14 @@ def draw_game_end():
     """
     Draws Game end onto the screen.
     """
-    game_end_text = game_over_font.render("YOU'VE FINISHED!", True, pygame.Color('white'))
+    game_end_text = game_over_font.render("YOU'VE FINISHED!", True,
+                                          pygame.Color('white'))
     window.blit(game_end_text, (RES_WIDTH//2 - 270, RES_HEIGHT//2 - 100))
-    congrats_text = font.render('CONGRATULATIONS!', True, pygame.Color('white'))
+    congrats_text = font.render('CONGRATULATIONS!', True,
+                                pygame.Color('white'))
     window.blit(congrats_text, (RES_WIDTH // 2 - 120, RES_HEIGHT // 2))
-    total_score_text = font.render('TOTAL SCORE: ' + str(total_score), True, pygame.Color('white'))
+    total_score_text = font.render('TOTAL SCORE: ' + str(total_score), True,
+                                   pygame.Color('white'))
     window.blit(total_score_text, (RES_WIDTH // 2 - 100, RES_HEIGHT // 2 + 50))
 
 
@@ -149,9 +170,11 @@ def draw_game_win():
     """
     Draws Game win onto the screen.
     """
-    game_over_text = game_over_font.render('YOU WON!', True, pygame.Color('white'))
+    game_over_text = game_over_font.render('YOU WON!', True,
+                                           pygame.Color('white'))
     window.blit(game_over_text, (RES_WIDTH//2 - 140, RES_HEIGHT//2 - 100))
-    next_lvl_text = font.render('NEXT LEVEL?', True, pygame.Color('white'))
+    next_lvl_text = font.render('NEXT LEVEL?', True,
+                                pygame.Color('white'))
     window.blit(next_lvl_text, (RES_WIDTH // 2 - 130, RES_HEIGHT // 2))
 
 
@@ -159,12 +182,18 @@ def draw_main_menu():
     """
     Draws main menu onto the screen.
     """
-    space_invaders_image = pygame.transform.scale(pygame.image.load('Sprites/main_menu_logo.png'), (500, 500))
-    window.blit(space_invaders_image, (RES_WIDTH//2 - 350, RES_HEIGHT//2 - 280))
-    start_game_text = game_over_font.render('START GAME?', True, pygame.Color('white'))
-    window.blit(start_game_text, (RES_WIDTH // 2 - 50, RES_HEIGHT // 2 + 190))
-    enemy_sprite = pygame.transform.scale(pygame.image.load('Sprites/Enemies/Enemy_2.png'), (100, 100))
-    window.blit(enemy_sprite, (RES_WIDTH // 2 + 270, RES_HEIGHT // 2))
+    space_invaders_image = pygame.transform.scale(
+        pygame.image.load('Sprites/main_menu_logo.png'),
+        (550, 550))
+    window.blit(space_invaders_image,
+                (RES_WIDTH//2 - 350, RES_HEIGHT//2 - 280))
+    planet_image = pygame.transform.scale(
+        pygame.image.load('Sprites/planet.png'),
+        (500, 500))
+    window.blit(planet_image, (RES_WIDTH // 2 + 40, RES_HEIGHT // 2 + 90))
+    start_game_text = font.render('PRESS ANY KEY', True,
+                                  pygame.Color('white'))
+    window.blit(start_game_text, (RES_WIDTH // 2 + 220, RES_HEIGHT // 2 + 50))
 
 
 def draw_interface():
@@ -180,9 +209,11 @@ def draw_interface():
         draw_main_menu()
 
     if not GAME_OVER and not GAME_WIN and not GAME_END and GAME_MODE:
-        player_health_text = font.render('HP: ' + str(player.health), True, pygame.Color('white'))
+        player_health_text = font.render('HP: ' + str(player.health), True,
+                                         pygame.Color('white'))
         window.blit(player_health_text, (25, RES_HEIGHT - 50))
-        player_score_text = font.render('Score: ' + str(current_score), True, pygame.Color('white'))
+        player_score_text = font.render('Score: ' + str(current_score), True,
+                                        pygame.Color('white'))
         window.blit(player_score_text, (RES_WIDTH//2 - 60, 25))
 
     if GAME_END:

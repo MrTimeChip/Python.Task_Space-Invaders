@@ -50,7 +50,8 @@ class Block(Gameobject, DamageReceiver):
 
     def draw(self, window):
         """ Draw an object in a certain window """
-        image = pygame.transform.scale(pygame.image.load(self._sprite_path), (self.width, self.height))
+        image = pygame.transform.scale(pygame.image.load(self._sprite_path),
+                                       (self.width, self.height))
         self._image = image
         self.rect = image.get_rect(left=self.x, top=self.y)
         window.blit(image, (self.x, self.y))
@@ -75,11 +76,11 @@ class Block(Gameobject, DamageReceiver):
         Receives damage.
         :param damage: damage to substract from health.
         """
-        sprite_number = random.randint(1, 2)
+        num = random.randint(1, 2)
         game.add_gameobject(BlockDamage(self.damage_x,
                                         self.damage_y,
                                         self,
-                                        sprite_path=damage_sprites[str(sprite_number)],
+                                        sprite_path=damage_sprites[str(num)],
                                         window=self._window))
         self.health -= damage
 
@@ -119,7 +120,8 @@ class BlockDamage(Gameobject):
 
     def draw(self, window):
         """ Draw an object in a certain window """
-        image = pygame.transform.scale(pygame.image.load(self._sprite_path), (self.width, self.height))
+        image = pygame.transform.scale(pygame.image.load(self._sprite_path),
+                                       (self.width, self.height))
         self.rect = image.get_rect(left=self.x, top=self.y)
         window.blit(image, (self.x, self.y))
         if game.DEBUG_MODE:

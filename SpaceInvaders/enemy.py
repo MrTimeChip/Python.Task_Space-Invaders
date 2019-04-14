@@ -55,16 +55,19 @@ class Enemy(Gameobject, DamageReceiver):
         self.draw(self._window)
         if self.y > self._window.get_height():
             game.GAME_OVER = True
-        if self._move_step_timer.start_timer(self._move_step_delay + random.randint(50, 100)):
+        if self._move_step_timer.start_timer(self._move_step_delay +
+                                             random.randint(50, 100)):
             self._move_step_delay -= 10
             self.move()
         if self._timer.start_timer(1000):
-            if random.random() + game.current_score / 800 + game.total_score / 1800 > 0.95:
+            score_balance = game.current_score / 800 + game.total_score / 1800
+            if random.random() + score_balance > 0.95:
                 self.shoot()
 
     def draw(self, window):
         """ Draw an object in a certain window """
-        image = pygame.transform.scale(pygame.image.load(self._sprite_path), (self.width, self.height))
+        image = pygame.transform.scale(pygame.image.load(self._sprite_path),
+                                       (self.width, self.height))
         self.rect = image.get_rect(left=self.x, top=self.y)
         window.blit(image, (self.x, self.y))
         if game.DEBUG_MODE:
@@ -97,7 +100,11 @@ class Enemy(Gameobject, DamageReceiver):
     def shoot(self):
         """ Shoots a projectile """
         sound.play_laser_shot(0.6)
-        bullet = Projectile(self.x + self.width//2 - 9, self.y + self.height, Enemy, speed=-10, window=self._window)
+        bullet = Projectile(self.x + self.width//2 - 9,
+                            self.y + self.height,
+                            Enemy,
+                            speed=-10,
+                            window=self._window)
         self.change_sprite()
         game.add_gameobject(bullet)
 

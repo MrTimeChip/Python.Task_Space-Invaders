@@ -38,7 +38,8 @@ class Explosion(Gameobject):
 
     def draw(self, window, ):
         """ Draw an object in a certain window """
-        image = pygame.transform.scale(pygame.image.load(self._sprite_path), (self.width, self.height))
+        image = pygame.transform.scale(pygame.image.load(self._sprite_path),
+                                       (self.width, self.height))
         self.rect = image.get_rect(left=self.x, top=self.y)
         window.blit(image, (self.x, self.y))
 

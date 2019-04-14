@@ -27,7 +27,9 @@ def draw_stars(stars_speed, window):
     for star in stars:
         star[1] += stars_speed
 
-        pygame.draw.rect(window, (star[2], star[2], star[2]), (star[0], star[1], star[3], star[3]))
+        pygame.draw.rect(window,
+                         (star[2], star[2], star[2]),
+                         (star[0], star[1], star[3], star[3]))
 
         if star[1] > window_height:
             star[1] = random.randrange(-50, -5)

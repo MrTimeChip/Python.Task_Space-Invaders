@@ -6,6 +6,7 @@ from damage_receiver import DamageReceiver
 from gameobject import Gameobject
 from timer import Timer
 
+
 class Player(Gameobject, DamageReceiver):
     _move_directions = ['LEFT', 'RIGHT', 'UP', 'DOWN']
 
@@ -47,7 +48,8 @@ class Player(Gameobject, DamageReceiver):
 
     def draw(self, window):
         """ Draw an object in a certain window """
-        image = pygame.transform.scale(pygame.image.load(self._sprite_path), (self.width, self.height))
+        image = pygame.transform.scale(pygame.image.load(self._sprite_path),
+                                       (self.width, self.height))
         self.rect = image.get_rect(left=self.x, top=self.y)
         window.blit(image, (self.x, self.y))
         if game.DEBUG_MODE:
@@ -129,11 +131,13 @@ class Player(Gameobject, DamageReceiver):
         if direction not in self._move_directions:
             raise ValueError('Wrong direction!')
         else:
+            win_width = self._window.get_width()
+            win_height = self._window.get_height()
             if direction == 'LEFT':
                 return self.x - self.speed > 0
             if direction == 'RIGHT':
-                return self.x + self.speed < self._window.get_width() - self.width
+                return self.x + self.speed < win_width - self.width
             if direction == 'UP':
                 return self.y - self.speed > 0
             if direction == 'DOWN':
-                return self.y + self.speed < self._window.get_height() - self.height
+                return self.y + self.speed < win_height - self.height

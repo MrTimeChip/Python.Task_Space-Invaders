@@ -38,7 +38,7 @@ class Projectile(Gameobject):
         self.damage = damage
         self.width = width
         self.height = height
-        self._shooting_class = shooting_class
+        self._shoot_class = shooting_class
         self.rect = None
         self._window = window
         self._is_destroyed = False
@@ -57,18 +57,22 @@ class Projectile(Gameobject):
 
             if self.is_collided(game.active_gameobjects):
                 if isinstance(self._collided_gameobject, DamageReceiver):
-                    if not isinstance(self._collided_gameobject, self._shooting_class):
+                    if not isinstance(self._collided_gameobject,
+                                      self._shoot_class):
                         if isinstance(self._collided_gameobject, Block):
                             self._collided_gameobject.damage_x = self.x
                             self._collided_gameobject.damage_y = self.y
                         self._collided_gameobject.receive_damage(self.damage)
-                        explosion = Explosion(self.x - 3, self.y - 7, window=self._window)
+                        explosion = Explosion(self.x - 3,
+                                              self.y - 7,
+                                              window=self._window)
                         game.add_gameobject(explosion)
                         self._is_destroyed = True
 
     def draw(self, window):
         """ Draw an object in a certain window """
-        image = pygame.transform.scale(pygame.image.load(self._sprite_path), (self.width, self.height))
+        image = pygame.transform.scale(pygame.image.load(self._sprite_path),
+                                       (self.width, self.height))
         self.rect = image.get_rect(left=self.x, top=self.y)
         window.blit(image, (self.x, self.y))
         if game.DEBUG_MODE:
